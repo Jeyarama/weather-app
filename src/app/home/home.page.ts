@@ -42,7 +42,9 @@ export class HomePage implements OnInit {
     }, err => {
       if (err && err.error && err.error.message) {
         let firstCharacter = err.error.message.charAt(0);
-        this.error = firstCharacter.toUpperCase() + err.error.message.substr(1);
+        if (firstCharacter) {
+          this.error = firstCharacter.toUpperCase() + err.error.message.substr(1);
+        }
       }
     })
   }
