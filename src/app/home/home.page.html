@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      <ion-icon name="arrow-round-back" class="ion-float-start" *ngIf="isShow && !error" (click)="back()"></ion-icon>
+      &nbsp;Weather
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen class="ion-padding ion-color"
+  [ngClass]="{'bg-primary': isShow && !error && (degreeCelcious?.toFixed(0) <= 30 && degreeCelcious?.toFixed(0) >= 1), 
+'bg-danger': isShow && !error && degreeCelcious?.toFixed(0) > 30, 'bg-sky': isShow && !error && degreeCelcious?.toFixed(0) < 0}">
+  <form [formGroup]="new_item_form" (submit)="goToWeather(new_item_form.value)" *ngIf="!isShow">
+    <ion-list lines="full" class="ion-margin ion-no-padding">
+      <ion-item>
+        <ion-label color="primary" position="floating">Enter The Place <ion-text color="danger">*</ion-text>
+        </ion-label>
+        <ion-input autocorrect="on" autofocus="on" required formControlName="location" clearInput="true"
+          clearOnEdit="true" color="primary" inputmode="text" required="true" (ngModelChange)="clearError()"></ion-input>
+      </ion-item>
+      <div class="ion-margin-start" *ngIf="error && new_item_form.valid">
+        <span style="color: var(--ion-color-danger);">{{error}}</span>
+      </div>
+    </ion-list>
+
+    <div class="ion-padding">
+      <ion-button expand="block" type="submit" class="ion-no-margin" [disabled]="!new_item_form.valid">Ok</ion-button>
+    </div>
+  </form>
+  <div *ngIf="isShow">
+    <div class="ion-padding ion-text-center">
+      {{weatherData.name}}
+    </div>
+    <div class="ion-padding ion-text-center" *ngIf="weatherData?.weather?.length > 0">
+      <img src="http://openweathermap.org/img/wn/{{weatherData?.weather[0]?.icon}}@2x.png" class="md-icon">
+    </div>
+    <div class="ion-text-center" *ngIf="degreeCelcious">
+      {{ degreeCelcious?.toFixed(0) }}&nbsp;&#8451;
+    </div>
+    <div class="ion-padding ion-text-center" *ngIf="weatherData?.weather?.length > 0">
+      {{ weatherData?.weather[0]?.main }}&nbsp;
+    </div>
+  </div>
+</ion-content>
