@@ -36,16 +36,23 @@ export class HomePage implements OnInit {
     this.http.get('http://api.openweathermap.org/data/2.5/weather?q=' + this.location + '&APPID=' + '19b67c2ab18da41c34772ce47fce3419').subscribe(s => {
       this.weatherData = s;
       this.isShow = true;
-      this.degreeCelcious = this.weatherData.main.temp - 273.15;
+      if (this.weatherData && this.weatherData.main && this.weatherData.main.temp) {
+        this.convertKelvinToDegree();
+      }
     }, err => {
       if (err && err.error && err.error.message) {
-        this.error = err.error.message.replace('city', 'City');
+        let firstCharacter = err.error.message.charAt(0);
+        this.error = firstCharacter.toUpperCase() + err.error.message.substr(1);
       }
     })
   }
 
+  convertKelvinToDegree() {
+    this.degreeCelcious = this.weatherData.main.temp - 273.15;
+  }
+
   clearError() {
-    if(this.new_item_form.invalid) {
+    if (this.new_item_form.invalid) {
       this.error = null;
     }
   }
