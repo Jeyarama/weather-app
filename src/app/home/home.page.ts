@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { NgForm, FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
+import { WeatherService } from '../services/weather.service';
 
 @Component({
   selector: 'app-home',
@@ -14,14 +14,17 @@ export class HomePage implements OnInit {
   weatherData: any = <any>{};
   error: string;
   isShow: boolean = false;
+  apiKey: string;
 
   constructor(private formBuilder: FormBuilder,
-    private http: HttpClient) { }
+    private weatherSvc: WeatherService) { }
 
   ngOnInit() {
     this.new_item_form = this.formBuilder.group({
       location: new FormControl('', Validators.required),
     });
+
+    this.apiKey = this.weatherSvc.getApiKey();
   }
 
   goToWeather(value) {
@@ -33,7 +36,7 @@ export class HomePage implements OnInit {
 
   getWeatherCondition() {
     this.error = null;
-    this.http.get('http://api.openweathermap.org/data/2.5/weather?q=' + this.location + '&APPID=' + '19b67c2ab18da41c34772ce47fce3419').subscribe(s => {
+    this.weatherSvc.getWeather(this.location, this.apiKey).subscribe(s => {
       this.weatherData = s;
       this.isShow = true;
       if (this.weatherData && this.weatherData.main && this.weatherData.main.temp) {
